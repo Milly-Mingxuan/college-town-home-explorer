@@ -1,31 +1,68 @@
-<!DOCTYPE html>
-<!-- A placeholder from the Home Sales template. Replace this file with your site's first page. -->
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Under construction</title>
-  <!-- An empty icon, so the browser doesn't log an error looking for favicon.ico -->
-  <link rel="icon" href="data:,">
-  <style>
-    :root { color-scheme: light dark; }
-    body {
-      max-width: 40rem;
-      margin: 0 auto;
-      padding: 3rem 1rem;
-      font-family: system-ui, sans-serif;
-      line-height: 1.5;
-    }
-    footer { margin-top: 3rem; font-size: 0.875rem; opacity: 0.75; }
-  </style>
-</head>
-<body>
-  <main>
-    <h1>This site is under construction</h1>
-    <p>It will show findings from the College-town home sales dataset.</p>
-  </main>
-  <footer>
-    <p>Data: College-town home sales dataset, version 1.0 (2026). University of Illinois-Deloitte Foundation Center for Business Emerging Technologies. Data collected March 2026.</p>
-  </footer>
-</body>
-</html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where Can You Afford a Home?</title><link rel="icon" href="data:,">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f1f4ef;color:#19332e;font-family:Arial,sans-serif;line-height:1.5}
+header{background:#123e36;color:#fff;padding:24px max(5vw,24px) 52px}nav{font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#bfe4cd;font-weight:bold}h1{font-size:clamp(36px,6vw,72px);line-height:1.05;max-width:850px;margin:45px 0 16px;font-family:Georgia,serif;font-weight:normal}header p{max-width:660px;font-size:18px;color:#d5e5da;margin:0}
+main{max-width:1180px;margin:auto;padding:0 24px 48px}.panel{background:white;border:1px solid #dce5db;border-radius:16px;padding:26px;box-shadow:0 4px 16px #173c3510;margin:24px 0}.controls{margin-top:-25px;position:relative;display:grid;grid-template-columns:2fr 1fr;gap:24px}.label{font-size:14px;font-weight:bold;letter-spacing:.4px;color:#456359}output{display:block;font-size:32px;font-weight:bold;color:#17664c}input[type=range]{width:100%;accent-color:#17664c}select{width:100%;font-size:16px;padding:12px;border:1px solid #8da59a;background:#fff;border-radius:8px;color:#173c35;margin-top:8px}.ends{display:flex;justify-content:space-between;color:#536b61;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.stat{padding:22px;background:white;border:1px solid #dce5db;border-radius:14px}.stat b{font-size:clamp(24px,4vw,38px);display:block;color:#17664c}.stat span{color:#536b61;font-size:14px}h2{font-family:Georgia,serif;font-size:28px;margin:0 0 6px;font-weight:normal}.sub{color:#536b61;margin-top:0}table{border-collapse:collapse;width:100%;font-size:15px}th{text-align:left;color:#536b61;background:#f1f4ef;font-size:13px;padding:12px}td{border-bottom:1px solid #e4eae3;padding:14px 12px}td:first-child{font-weight:bold}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}.bar-track{background:#e5ede5;border-radius:8px;overflow:hidden;height:10px;min-width:90px}.bar{height:100%;background:#398565;border-radius:8px}.percent{font-size:14px;color:#17664c;font-weight:bold;margin-top:5px}.table-wrap{overflow:auto}.note{font-size:14px;color:#50645a}footer{border-top:1px solid #d2dfd3;padding:24px 0;color:#50645a;font-size:14px}a{color:#17664c}button{font:inherit} @media(max-width:650px){main{padding:0 14px 24px}.controls,.stats{grid-template-columns:1fr}.panel{padding:18px}td,th{padding:10px 8px}header{padding-bottom:45px}}
+</style></head>
+<body><header><nav>Campus Home Explorer · Housing research</nav><h1>Where can you<br>afford a home?</h1><p>One budget, many college towns. Explore completed home sales and see where your buying power would have gone furthest.</p></header>
+<main>
+<section class="panel controls" aria-label="Budget filters">
+<div><label class="label" for="budget">YOUR PURCHASE BUDGET</label><output id="budgetLabel" for="budget">$300,000</output><input id="budget" type="range" min="50000" max="1500000" step="25000" value="300000"><div class="ends"><span>$50k</span><span>$1.5m</span></div></div>
+<div><label class="label" for="state">STATE</label><select id="state"><option value="">All states</option></select><label class="label" for="sort">SORT BY</label><select id="sort"><option value="share">Highest budget match</option><option value="median">Lowest median price</option><option value="count">Most matching sales</option></select></div>
+</section>
+<section class="stats" aria-label="Key results" aria-live="polite"><div class="stat"><span>Historical sales in budget</span><b id="matches">—</b></div><div class="stat"><span>Share within budget</span><b id="share">—</b></div><div class="stat"><span>Best matching city</span><b id="best" style="font-size:25px">—</b></div></section>
+<section class="panel"><h2>Compare college towns</h2><p class="sub">Share of eligible historical sales at or below your selected budget. Adjust the budget to update the ranking.</p><p id="status" role="status">Loading home sales data…</p><div class="table-wrap"><table><thead><tr><th>City, State</th><th class="num">Median price</th><th class="num">Sales in budget</th><th class="num">Eligible sales</th><th>Budget match</th></tr></thead><tbody id="results"></tbody></table></div></section>
+<section class="panel"><h2>About the data</h2><p class="note" id="countNote">Figures will be calculated directly from the course CSV.</p><p>We include sale prices between $10,000 and $5,000,000 inclusive to reduce the effect of implausible transactions. A budget match means an eligible completed sale whose recorded price is no greater than your budget. City medians use all eligible sales in each city, not only the matching sales.</p><p class="note">Rows represent completed sales, not current listings or necessarily unique properties. We never deduplicate by street address; the listing ID identifies sales. We do not use property type, days on market, lot size, tax, bathroom count or living area because these are not necessary for this analysis. Historical prices are not guarantees of present availability, and purchase price excludes financing and other costs.</p></section>
+<footer>Source: College-town home sales dataset, version 1.0 (2026). University of Illinois-Deloitte Foundation Center for Business Emerging Technologies. Data collected March 2026. <a href="docs/data_description_sheet.md">Data description</a>.</footer>
+</main>
+<script>
+const el=id=>document.getElementById(id);
+const currency=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
+const integer=n=>n.toLocaleString('en-US');
+const pct=n=>(100*n).toFixed(1)+'%';
+let records=[];
+function parseCSV(text){
+ const rows=[];let row=[],field='',quoted=false;
+ for(let i=0;i<text.length;i++){
+  const c=text[i];
+  if(c==='"'){if(quoted&&text[i+1]==='"'){field+='"';i++}else quoted=!quoted}
+  else if(c===','&&!quoted){row.push(field);field=''}
+  else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(v=>v!==''))rows.push(row);row=[];field=''}
+  else field+=c;
+ }
+ if(field||row.length){row.push(field);rows.push(row)}return rows;
+}
+function median(a){const m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2}
+function render(){
+ const budget=Number(el('budget').value), state=el('state').value;
+ el('budgetLabel').textContent=currency(budget);
+ const groups=new Map();
+ for(const r of records){if(state&&r.state!==state)continue;const key=r.city+', '+r.state;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(r.price)}
+ const values=Array.from(groups,([city,prices])=>{prices.sort((a,b)=>a-b);const count=prices.filter(p=>p<=budget).length;return {city,count,total:prices.length,share:count/prices.length,median:median(prices)}});
+ const byShare=(a,b)=>b.share-a.share||a.median-b.median||a.city.localeCompare(b.city);
+ values.sort(el('sort').value==='median'?(a,b)=>a.median-b.median:el('sort').value==='count'?(a,b)=>b.count-a.count:byShare);
+ const total=values.reduce((s,r)=>s+r.total,0), matches=values.reduce((s,r)=>s+r.count,0);
+ el('matches').textContent=integer(matches);el('share').textContent=total?pct(matches/total):'—';
+ const best=[...values].sort(byShare)[0];el('best').textContent=best&&best.count?best.city:'No matching city';
+ el('status').textContent=values.length+' cities · '+integer(total)+' eligible sales';
+ const body=el('results');body.replaceChildren();
+ for(const r of values){const tr=document.createElement('tr');for(const [v,n] of [[r.city,false],[currency(r.median),true],[integer(r.count),true],[integer(r.total),true]]){const td=document.createElement('td');td.textContent=v;if(n)td.className='num';tr.append(td)}
+ const td=document.createElement('td'),track=document.createElement('div'),bar=document.createElement('div'),label=document.createElement('div');track.className='bar-track';bar.className='bar';bar.style.width=(r.share*100)+'%';track.append(bar);label.className='percent';label.textContent=pct(r.share);td.append(track,label);tr.append(td);body.append(tr)}
+}
+async function init(){
+ try{const response=await fetch('data/college_town_home_sales.csv');if(!response.ok)throw Error('Could not load CSV ('+response.status+')');
+ const rows=parseCSV(await response.text());const header=rows.shift().map((v,i)=>i===0?v.replace(/^\uFEFF/,''):v);
+ const city=header.indexOf('city'),state=header.indexOf('state'),price=header.indexOf('sale_price');if([city,state,price].some(i=>i<0))throw Error('Expected fields are missing.');
+ records=rows.map(r=>({city:r[city],state:r[state],price:Number(r[price])})).filter(r=>r.city&&r.state&&Number.isFinite(r.price)&&r.price>=10000&&r.price<=5000000);
+ if(!records.length)throw Error('No eligible sales found.');
+ for(const s of [...new Set(records.map(r=>r.state))].sort()){const opt=document.createElement('option');opt.value=s;opt.textContent=s;el('state').append(opt)}
+ el('countNote').textContent=integer(rows.length)+' original records; '+integer(records.length)+' eligible sales across '+new Set(records.map(r=>r.city+', '+r.state)).size+' cities.';
+ for(const id of ['budget','state','sort'])el(id).addEventListener('input',render);render();
+ }catch(error){el('status').textContent='Unable to load sales data. '+error.message;}
+}
+init();
+</script></body></html>
